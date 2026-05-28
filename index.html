@@ -1,43 +1,154 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device=width, initial-scale=1.0">
-        <title>QR Code Generator - Made by Apple</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeGen — QR & Data Matrix Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <body>
-    <div class="container">
-        <p>Enter your text or URL</p>
-        <input type="text" placeholder="Text or URL" id="qrText">
+  <div class="noise"></div>
 
-        <div id="imgBox">
-            <img src="" id="qrImage">
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-mark">AS | </span>
+      <span class="logo-text">CodeGen</span>
+    </div>
+    <p class="tagline">QR &amp; Data Matrix generator</p>
+  </header>
+
+  <main class="main">
+
+    <div class="card">
+
+      <div class="tabs" role="tablist" aria-label="Code type">
+        <button
+          class="tab active"
+          id="tab-qr"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-qr"
+          data-tab="qr"
+        >
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/>
+            <rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/>
+          </svg>
+          QR Code
+        </button>
+        <button
+          class="tab"
+          id="tab-dm"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-dm"
+          data-tab="dm"
+        >
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="3" width="3" height="3"/><rect x="9" y="3" width="3" height="3"/>
+            <rect x="15" y="3" width="3" height="3"/><rect x="21" y="3" width="3" height="3"/>
+            <rect x="3" y="9" width="3" height="3"/><rect x="15" y="9" width="3" height="3"/>
+            <rect x="3" y="15" width="3" height="3"/><rect x="9" y="15" width="3" height="3"/>
+            <rect x="21" y="15" width="3" height="3"/>
+            <rect x="3" y="21" width="3" height="3"/><rect x="9" y="21" width="3" height="3"/>
+            <rect x="15" y="21" width="3" height="3"/><rect x="21" y="21" width="3" height="3"/>
+          </svg>
+          Data Matrix
+          <span class="badge">ISO 16022</span>
+        </button>
+      </div>
+
+      <div class="tab-panels">
+
+        <div id="panel-qr" class="panel active" role="tabpanel" aria-labelledby="tab-qr">
+          <label class="field-label" for="qr-input">Text or URL</label>
+          <div class="input-row">
+            <input
+              class="field-input"
+              id="qr-input"
+              type="text"
+              placeholder="https://example.com"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="gen-btn" data-type="qr" aria-label="Generate QR code">
+              <span class="btn-label">Generate</span>
+              <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+          <p class="field-hint">Supports URLs, plain text, phone numbers, email addresses&hellip;</p>
         </div>
 
-        <button onclick="GenerateQR()">Generate QR Code</button>
+        <div id="panel-dm" class="panel" role="tabpanel" aria-labelledby="tab-dm" hidden>
+          <label class="field-label" for="dm-input">Text or data</label>
+          <div class="input-row">
+            <input
+              class="field-input"
+              id="dm-input"
+              type="text"
+              placeholder="Serial number, product ID, URL…"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="gen-btn" data-type="dm" aria-label="Generate Data Matrix code">
+              <span class="btn-label">Generate</span>
+              <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+          <p class="field-hint">Compact square symbol — ideal for industrial &amp; inventory use</p>
+        </div>
+
+      </div>
+
+      <div class="output" id="output" aria-live="polite" aria-label="Generated code output">
+        <div class="output-empty" id="output-empty">
+          <div class="placeholder-grid" aria-hidden="true"></div>
+          <p>Your code will appear here</p>
+        </div>
+        <div class="output-result" id="output-result" hidden>
+          <div class="code-frame">
+            <img class="code-img" id="code-img" src="" alt="Generated code">
+          </div>
+          <div class="result-meta">
+            <span class="result-type" id="result-type"></span>
+            <span class="result-value" id="result-value"></span>
+          </div>
+          <div class="result-actions">
+            <button class="action-btn" id="dl-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+              Download PNG
+            </button>
+            <button class="action-btn" id="copy-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              </svg>
+              Copy URL
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <script>
+    <p class="footer-note">
+      Codes generated via <a href="https://goqr.me/api/" target="_blank" rel="noopener">QR Server API</a>.
+      All processing is client-side.
+    </p>
 
-        let imgBox = document.getElementById("imgBox");
-        let qrImage = document.getElementById("qrImage");
-        let qrText = document.getElementById("qrText");
+  </main>
 
-        function GenerateQR(){
-         if(qrText.value.length > 0){
-              qrImage.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qrText.value;
-             imgBox.classList.add("show-img")
-         }
-         else{
-            qrText.classList.add("error");
-            setTimeout(()=>{
-                qrText.classList.remove("error");
-            },
-            1000);
-         }
-        }
-    </script>
-
-    </body>
+  <script src="app.js"></script>
+</body>
 </html>
